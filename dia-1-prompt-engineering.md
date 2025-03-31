@@ -17,7 +17,7 @@ O livro que disponibilizaram está neste [site](https://www.kaggle.com/whitepape
 
 Os Modelos de Linguagem Grandes (LLMs) estão em rápida ascensão ("popping up everywhere"), mudando como interagimos com a tecnologia.
 
-*   **Desempenho Transformador:** Superam significativamente o estado da arte anterior em PNL, lidando com tarefas complexas que exigem compreensão, geração e até raciocínio.
+*   **Desempenho Transformador:** Superam significativamente o estado da arte anterior em NPL, lidando com tarefas complexas que exigem compreensão, geração e até raciocínio.
 *   **Novas Aplicações Viáveis:** Possibilitam usos práticos em:
     *   Tradução automática fluente.
     *   Geração, completação e depuração de código.
