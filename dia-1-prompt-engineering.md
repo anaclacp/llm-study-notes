@@ -1,8 +1,10 @@
-# 📖 Anotações Detalhadas
+# 📖 Anotações Detalhadas - Dia 1: Fundamentos de LLMs e Geração de Texto
 
-Olá! 👋 Este repositório serve como meu caderno de estudos aprofundado sobre Modelos de Linguagem Grandes (LLMs), baseado no material ""Foundational Large Language Models & Text Generation". O objetivo é documentar não apenas os conceitos, mas também as nuances, exemplos e os esclarecimentos obtidos durante o aprendizado, criando um recurso rico para consulta futura.
+Olá! 👋 Este repositório serve como meu caderno de estudos aprofundado sobre Modelos de Linguagem Grandes (LLMs), baseado no material ""Foundational Large Language Models & Text Generation" - Disponível nesse [site](https://www.kaggle.com/whitepaper-foundational-llm-and-text-generation). O objetivo é documentar não apenas os conceitos, mas também as nuances, exemplos e os esclarecimentos obtidos durante o aprendizado, criando um recurso rico para consulta futura.
 
-**Progresso Atual:** Conteúdo coberto até a **página 20**. ** Atenção: ** irei atualizar esse documento todos os dias até terminar o aprendizado. Acompanhe o meu Linkedin ([link) para mais atualizações!
+**Progresso Atual:** Conteúdo coberto até a **página 20** do material *"Foundational Large Language Models & Text Generation"*.
+
+**Atenção:** 📌 Irei atualizar os documentos diariamente durante o curso "5-Day Gen AI Intensive" até terminar o aprendizado. Acompanhe o meu [perfil no Linkedin](https://www.linkedin.com/in/ana-clara-pereira-51264a21a/) para mais atualizações e discussões!
 
 ---
 
@@ -135,14 +137,6 @@ Fazer LLMs "pensarem" logicamente é um desafio multifacetado. Requer a combina�
     *   *Conhecimento Externo:* Usar fontes externas via `Retrieval-Augmented Generation (RAG)` para fornecer fatos e contexto adicionais durante o raciocínio.
 
 **Conclusão:** Os melhores modelos de raciocínio combinam sinergicamente muitas dessas técnicas.
-
----
-
-## Próximos Passos 🎯
-
-*   [Seu próximo tópico de estudo: Ex: Detalhes sobre RLHF]
-*   [Seu próximo tópico: Comparação entre diferentes famílias de LLMs]
-*   [Seu próximo tópico: Técnicas de avaliação de LLMs]
 
 ---
 
