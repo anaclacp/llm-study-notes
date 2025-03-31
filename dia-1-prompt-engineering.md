@@ -7,7 +7,7 @@ O objetivo é documentar não apenas os conceitos centrais, mas também as nuanc
 
 O livro que disponibilizaram está neste [site](https://www.kaggle.com/whitepaper-foundational-llm-and-text-generation).
 
-**Progresso Atual:** Conteúdo coberto até a **página 20** do material *"Foundational Large Language Models & Text Generation"*.
+**Progresso Atual:** Conteúdo documentado aqui até a **página 20** do livro *"Foundational Large Language Models & Text Generation"*.
 
 **Atenção:** 📌 Irei atualizar os documentos diariamente durante o curso "5-Day Gen AI Intensive" até terminar o aprendizado. Acompanhe o meu [perfil no Linkedin](https://www.linkedin.com/in/ana-clara-pereira-51264a21a/) para mais atualizações e discussões!
 
