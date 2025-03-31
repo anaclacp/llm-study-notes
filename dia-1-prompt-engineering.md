@@ -1,4 +1,4 @@
-# 📖 Anotações Detalhadas - Dia 1: Fundamentos de LLMs, Geração de Texto e Engenharia de Prompt (Baseado no Whitepaper e Podcast)
+# 📚 Anotações Detalhadas - Dia 1: Fundamentos de LLMs, Geração de Texto e Engenharia de Prompt (Baseado no Whitepaper e Podcast)
 
 Olá! 👋  
 Este arquivo reúne minhas anotações aprofundadas do **Dia 1** do curso **"5-Day Gen AI Intensive"**.  
