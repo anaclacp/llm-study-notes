@@ -440,4 +440,67 @@ Otimizar geralmente implica em compromissos (trade-offs), aceitando uma pequena 
 > 
 > **Cuidado:** A qualidade desses dados gerados é crucial; dados sintéticos ruins podem prejudicar o aprendizado do aluno.
 ---
+### Métodos que Preservam a Saída (Output-Preserving)
+
+Estes métodos otimizam a performance da inferência **sem alterar o resultado final do modelo**. São considerados "seguros" em termos de qualidade e geralmente são os primeiros a serem implementados.
+
+#### 1. Flash Attention
+
+*   **Problema:** Cálculo padrão de `Self-Attention` é lento para sequências longas (custo quadrático) e limitado pela velocidade de transferência de dados entre memórias do chip.
+*   **Solução:** Algoritmo de atenção otimizado que é **"IO-Aware"** (consciente da Entrada/Saída de dados).
+*   **Mecanismo:**
+    *   Minimiza a movimentação de dados entre a memória lenta (`HBM`) e a memória rápida on-chip (`SRAM`/`VMEM`).
+    *   Reordena operações matemáticas da atenção.
+    *   **Kernel Fusion:** Funde múltiplas operações em um único "kernel" computacional para reduzir chamadas à memória.
+*   **Característica Chave:** É um algoritmo **exato** - produz o mesmo resultado numérico que a atenção padrão.
+*   **Benefício:** Redução significativa da latência (2-4x citado no paper para a etapa de atenção) ao diminuir o gargalo de I/O.
+
+#### 2. Prefix Caching (ou Context Caching)
+
+*   **Problema:** A etapa inicial de calcular os vetores `Key` (K) e `Value` (V) para todo o prompt de entrada (operação chamada **`prefill`**) é computacionalmente cara e lenta, especialmente para contextos longos.
+*   **Conceito Base:** O resultado do `prefill` é o **`KV Cache`**, que armazena os K e V de todas as camadas para o prompt. Esse cache é crucial para a geração eficiente da resposta (decodificação), pois evita reprocessar o prompt a cada novo token gerado.
+*   **Solução:** **Armazenar e Reutilizar o `KV Cache`** de uma requisição anterior se o **início (prefixo)** da entrada da nova requisição for idêntico.
+*   **Mecanismo:**
+    1.  Na primeira requisição com um longo prefixo (ex: histórico de chat, documento), calcula-se o `prefill` completo e armazena-se o `KV Cache` resultante.
+    2.  Em requisições subsequentes onde **apenas se anexa** nova informação ao prefixo existente (ex: nova mensagem no chat, nova pergunta sobre o documento), recupera-se o `KV Cache` armazenado.
+    3.  Calcula-se o `prefill` **apenas para a parte nova** da entrada.
+    4.  Anexa-se os novos KVs ao `KV Cache` recuperado.
+*   **Benefício:** Redução drástica da latência e do custo computacional da etapa de `prefill`, especialmente perceptível em conversas longas ou análise de documentos grandes.
+*   **Requisito:** A estrutura do prompt deve ser estável no início. Informações dinâmicas (como timestamps) **não devem ser colocadas no prefixo**, mas sim anexadas, para não invalidar o cache.
+*   **Casos de Uso Comuns:** Chatbots multi-turno, sistemas de Pergunta e Resposta (Q&A) sobre documentos ou código.
+*   **Nomenclatura:** Conhecido como `Context Caching` em algumas plataformas (ex: Google Cloud).
+
+### Métodos que Preservam a Saída (Output-Preserving) - Continuação
+
+#### 3. Decodificação Especulativa (Speculative Decoding)
+
+*   **Problema:** A fase de `decode` (geração token a token) é inerentemente serial e geralmente limitada pela memória/velocidade de acesso, deixando capacidade de computação ociosa.
+*   **Solução:** Usar a capacidade de computação ociosa para acelerar a geração serial.
+*   **Mecanismo:**
+    1.  Um modelo **"drafter" (rascunhador)**, pequeno e rápido, prevê *múltiplos* tokens futuros (ex: `k` tokens).
+    2.  O **modelo principal**, mais lento e preciso, verifica essas `k` hipóteses (se aceitaria o 1º token, os 2 primeiros, ..., os `k` tokens) **em paralelo**.
+    3.  A sequência mais longa de tokens verificada e aceita pelo modelo principal é usada como saída para aquele "super passo" de decodificação.
+*   **Benefício:** Reduz a latência da fase de `decode` ao transformar passos seriais em verificações paralelas.
+*   **Qualidade:** **Neutra**. O modelo principal só aceita tokens que ele mesmo geraria; ele apenas verifica as "especulações" do drafter.
+*   **Requisito:** O modelo `drafter` deve estar bem alinhado com o `principal` para que a taxa de aceitação das especulações seja alta e o ganho de velocidade seja efetivo.
+
+#### 4. Batching (Agrupamento em Lotes)
+
+*   **Conceito Geral:** Agrupar múltiplas tarefas independentes para processá-las simultaneamente no mesmo hardware, melhorando a utilização dos recursos e o **throughput** (requisições por segundo).
+*   **Aplicação em LLMs:** Principalmente útil na fase de `decode` (que é memory-bound e tem compute ocioso). Permite processar os passos de decodificação de várias requisições diferentes em paralelo no mesmo acelerador (GPU/TPU).
+*   **Considerações:**
+    *   Requer implementação cuidadosa para aproveitar a capacidade do hardware.
+    *   Limitado pela **memória** disponível (decode é memory-intensive).
+    *   Fundamental para sistemas de inferência de alto throughput.
+
+#### 5. Parallelization (Paralelização)
+
+*   **Conceito Geral:** Dividir uma tarefa computacionalmente intensiva entre **múltiplos** dispositivos de hardware para aumentar a capacidade de processamento total e reduzir a **latência**.
+*   **Tipos em Transformers:**
+    *   **Sequence Parallelism:** Divide a sequência de entrada.
+    *   **Pipeline Parallelism:** Divide as camadas do modelo.
+    *   **Tensor Parallelism:** Divide os cálculos dentro de uma camada.
+*   **Consideração Crítica:** O **custo de comunicação e sincronização** entre os dispositivos é alto. Uma estratégia de paralelização inadequada pode levar a pouco ou nenhum ganho de velocidade devido a esse overhead.
+*   **Objetivo:** Escolher a estratégia correta para balancear o ganho de computação com o custo da comunicação.
+---
 *Este README reflete meu entendimento atual, enriquecido por discussões e esclarecimentos com uma IA (Gemini 2.5 Pro). Continuará a ser atualizado à medida que avanço nos estudos.*
