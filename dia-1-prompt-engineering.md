@@ -378,5 +378,63 @@ Três abordagens técnicas principais são utilizadas:
 A avaliação robusta de aplicações LLM é um processo iterativo que requer uma abordagem **sistemática e personalizada**. A combinação de **dados de avaliação representativos**, **análise end-to-end do sistema** e **métricas/critérios bem definidos** é fundamental. A escolha e combinação dos métodos de avaliação (computacional, humano, LLM-as-judge) deve ser guiada pelos requisitos da aplicação, recursos disponíveis e a necessidade de **escalabilidade vs. profundidade da análise**, com ênfase na **validação e calibração contínua** dos métodos automáticos.
 
 ---
+## Acelerando a Inferência LLM
 
+**Contexto:**
+*   LLMs maiores = Melhor qualidade, mas maior custo computacional (memória, processamento) e latência na inferência (uso).
+*   Objetivo: Otimizar a inferência para reduzir custo e latência, mantendo a qualidade aceitável.
+*   Foco: Uso eficiente de **memória** e **computação**.
+
+### Trade-offs Fundamentais na Otimização de Inferência
+
+Otimizar geralmente implica em compromissos (trade-offs), aceitando uma pequena perda em um aspecto para ganhar muito em outro.
+
+*   **Qualidade vs. Latência/Custo:**
+    *   Aceitar uma queda marginal (ou, na prática, imperceptível para a tarefa) na qualidade para obter inferência significativamente mais rápida e/ou barata.
+    *   Exemplos: Usar modelos menores, Quantização.
+    *   **Chave:** Avaliar o impacto na *tarefa específica*, não apenas a perda teórica de precisão.
+
+*   **Latência vs. Custo (ou Latência vs. Throughput):**
+    *   **Latência:** Tempo para obter uma resposta para *uma* requisição.
+    *   **Throughput:** Quantas requisições o sistema consegue processar por unidade de tempo (eficiência geral). Maior throughput = menor custo por requisição.
+    *   Exemplos:
+        *   *Baixa Latência é Prioridade:* Chatbots, aplicações interativas.
+        *   *Baixo Custo (Alto Throughput) é Prioridade:* Processamento em lote (offline labeling), tarefas assíncronas.
+
+### Categorias de Métodos de Aceleração
+
+*   **Output-approximating:** Modificam ligeiramente a saída do modelo em troca de performance. (Ex: Quantização, Destilação).
+*   **Output-preserving:** Aceleram a inferência sem alterar a saída do modelo (não abordado neste trecho, mas exemplos seriam otimizações de software/kernel, batching eficiente, KV caching otimizado).
+
+### Métodos que Aproximam a Saída (Output-Approximating)
+
+#### 1. Quantização (Quantization)
+
+*   **Definição:** Reduzir a precisão numérica (bits) dos pesos e ativações do modelo (ex: de float32 para int8 ou int4).
+*   **Benefícios:**
+    *   Menor pegada de memória (modelos cabem em hardware menor).
+    *   Menor overhead de comunicação (transferência de dados mais rápida).
+    *   Potencialmente cálculos mais rápidos em hardware compatível (GPU/TPU).
+*   **Impacto na Qualidade:** Geralmente pequeno, aceitável no trade-off. Pode ser mitigado com **Quantization Aware Training (QAT)**, que integra a quantização ao treinamento.
+*   **Customização:** Ajuste de precisão (pesos vs ativações) e granularidade.
+
+#### 2. Destilação (Distillation)
+
+*   **Definição:** Um conjunto de técnicas onde um **modelo menor ("aluno") é treinado para imitar o comportamento de um modelo maior e mais capaz ("professor")**. A ideia é transferir o "conhecimento" do professor para o aluno, visando eficiência.
+*   **Por que funciona:** Modelos maiores geralmente superam os menores devido à capacidade paramétrica. A destilação tenta reduzir essa diferença de qualidade, resultando em um modelo aluno mais capaz do que seria se treinado isoladamente.
+*   **Objetivo Principal:** Obter um modelo menor (mais rápido, mais barato de rodar/treinar) que tenha uma qualidade mais próxima à de um modelo maior.
+*   **Tipos Comuns:**
+    *   **Destilação de Dados (Data Distillation / Model Compression):** O modelo professor gera **dados sintéticos** (novos exemplos de entrada e saída). O modelo aluno é então treinado com os dados originais *mais* esses dados sintéticos. (Cuidado: qualidade dos dados sintéticos é crucial).
+    *   **Destilação de Conhecimento (Knowledge Distillation):** Tenta alinhar a *distribuição de probabilidade de saída* (logits/softmax) do aluno com a do professor para cada entrada. Mais direto na transferência de "como" o professor pensa.
+    *   **Destilação On-Policy:** Usa Aprendizado por Reforço (RL), onde o professor fornece feedback sobre as sequências geradas pelo aluno.
+
+#### Exemplo:
+*   **Relevância:** Reportagens recentes destacam a **DeepSeek** (empresa chinesa) como um exemplo proeminente de sucesso ao utilizar **destilação como estratégia central e eficaz**.
+*    **Resultado:** Essa estratégia permitiu à DeepSeek desenvolver rapidamente modelos **altamente competitivos em performance, mas significativamente mais eficientes** (menores, mais rápidos, mais baratos de operar).
+
+> **Nota: Dados Sintéticos na Destilação**
+> **No universo dos Grandes Modelos de Linguagem (LLMs)**, dados sintéticos referem-se a qualquer tipo de dado (principalmente texto, mas também pode incluir código, pares de perguntas e respostas, diálogos, etc.) que foi gerado artificialmente por um próprio LLM (ou outro processo algorítmico), em vez de ser coletado diretamente de fontes humanas ou interações do mundo real.
+> **Como se encaixam na Destilação:** Eles servem como uma ponte para transferir conhecimento. O professor cria novos pares `prompt -> resposta` (ou variações dos existentes) que são então usados, junto com os dados reais (se houver), para **treinar um modelo menor (o "aluno")**.
+> **Cuidado:** A qualidade desses dados gerados é crucial; dados sintéticos ruins podem prejudicar o aprendizado do aluno.
+---
 *Este README reflete meu entendimento atual, enriquecido por discussões e esclarecimentos com uma IA (Gemini 2.5 Pro). Continuará a ser atualizado à medida que avanço nos estudos.*
