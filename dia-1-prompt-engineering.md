@@ -206,9 +206,9 @@ Fazer LLMs "pensarem" logicamente é um desafio multifacetado. Requer a combina�
 | Soft Prompt  | ~0.01%                | Mínimo|
 
 ###. ✨**Pontos Essenciais**
-SFT é obrigatório antes do RLHF
-PEFT não substitui SFT/RLHF, mas otimiza
-Full FT > LoRA > Soft Prompt (performance vs custo)
+- SFT é obrigatório antes do RLHF
+- PEFT não substitui SFT/RLHF, mas otimiza
+- Full FT > LoRA > Soft Prompt (performance vs custo)
 ---
 
 *Este README reflete meu entendimento atual, enriquecido por discussões e esclarecimentos com uma IA assistente. Continuará a ser atualizado à medida que avanço nos estudos.*
