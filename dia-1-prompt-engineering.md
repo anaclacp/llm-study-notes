@@ -211,4 +211,78 @@ Fazer LLMs "pensarem" logicamente é um desafio multifacetado. Requer a combina�
 - Full FT > LoRA > Soft Prompt (performance vs custo)
 ---
 
+## Técnicas de Sampling e Parâmetros em LLMs
+
+### 1. Greedy Search
+- **Mecanismo**: 
+  - Seleciona sempre o token com **maior probabilidade** em cada passo
+- **Vantagens**:
+  - Implementação simples
+  - Baixo custo computacional
+- **Limitações**:
+  - Tendência a gerar repetições
+  - Falta de criatividade nas saídas
+
+### 2. Random Sampling
+- **Funcionamento**:
+  - Amostragem proporcional às probabilidades dos tokens
+- **Características**:
+  - Saídas mais diversificadas
+  - Maior risco de incoerência
+- **Uso ideal**:
+  - Quando criatividade é prioritária
+
+### 3. Temperature Sampling
+- **Parâmetro**:
+  - `temperature` (valores típicos: 0.1-1.5)
+- **Efeitos**:
+  - Valores baixos (0.1-0.5):
+    - Textos mais conservadores
+    - Foco em alta probabilidade
+  - Valores altos (0.7-1.5):
+    - Maior diversidade
+    - Risco aumentado de erros
+
+### 4. Top-K Sampling
+- **Lógica**:
+  - Filtra os **K tokens** mais prováveis
+  - Realiza amostragem neste subconjunto
+- **Configuração**:
+  - K comum: 20-100
+- **Balanceamento**:
+  - Entre criatividade e qualidade
+
+### 5. Top-P (Nucleus) Sampling
+- **Dinâmica**:
+  - Seleciona tokens até atingir probabilidade cumulativa P
+- **Vantagem principal**:
+  - Adaptabilidade ao contexto
+    - Amplia seleção em casos ambíguos
+    - Restringe em contextos claros
+- **Valores típicos**:
+  - P = 0.7-0.95
+
+### 6. Best-of-N Sampling
+- **Processo**:
+  1. Gera N respostas independentes
+  2. Seleciona a melhor via:
+     - Modelo de recompensa
+     - Métricas de qualidade
+- **Aplicações**:
+  - Tarefas críticas
+  - Quando qualidade > velocidade
+
+### Combinações Recomendadas
+| Cenário | Configuração Ideal |
+|---------|--------------------|
+| Chatbots | temperature=0.7 + top_p=0.9 |
+| Geração de Código | greedy ou temperature=0.3 |
+| Conteúdo Criativo | temperature=1.0 + top_k=50 |
+
+### Glossário Técnico
+- **Sampling**: Processo de seleção de tokens durante geração
+- **Token**: Unidade mínima de processamento (ex: palavra, subpalavra)
+- **Reward Model**: Sistema para avaliar qualidade de respostas
+---
+
 *Este README reflete meu entendimento atual, enriquecido por discussões e esclarecimentos com uma IA assistente. Continuará a ser atualizado à medida que avanço nos estudos.*
