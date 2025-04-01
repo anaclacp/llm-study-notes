@@ -379,4 +379,4 @@ A avaliação robusta de aplicações LLM é um processo iterativo que requer um
 
 ---
 
-*Este README reflete meu entendimento atual, enriquecido por discussões e esclarecimentos com uma IA assistente. Continuará a ser atualizado à medida que avanço nos estudos.*
+*Este README reflete meu entendimento atual, enriquecido por discussões e esclarecimentos com uma IA (Gemini 2.5 Pro). Continuará a ser atualizado à medida que avanço nos estudos.*
