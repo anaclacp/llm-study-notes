@@ -13,6 +13,52 @@ O livro que disponibilizaram está neste [site](https://www.kaggle.com/whitepape
 
 ---
 
+## Sumário
+
+*   [🤔 A Ascensão dos LLMs: Por Que São Importantes?](#-a-ascensão-dos-llms-por-que-são-importantes)
+*   [🏗️ A Arquitetura Transformer - A Revolução Fundamental (Whitepaper & Podcast)](#️-a-arquitetura-transformer---a-revolução-fundamental-whitepaper--podcast)
+*   [⚙️ Anatomia do Transformer: Como Funciona por Dentro](#️-anatomia-do-transformer-como-funciona-por-dentro)
+    *   [3.1 Preparação da Entrada: Transformando Texto em Números Significativos 🔢](#31-preparação-da-entrada-transformando-texto-em-números-significativos-)
+    *   [Self-Attention: O Coração do Contexto ✨](#self-attention-o-coração-do-contexto-)
+    *   [Outras Camadas Essenciais na Arquitetura](#outras-camadas-essenciais-na-arquitetura)
+*   [🧠 Mixture of Experts (MoE) - Escalabilidade Eficiente](#-mixture-of-experts-moe---escalabilidade-eficiente)
+*   [📈 Evolução dos LLMs: Uma Linha do Tempo (Baseado no Podcast)](#-evolução-dos-llms-uma-linha-do-tempo-baseado-no-podcast)
+*   [💡 Large Reasoning Models](#-large-reasoning-models)
+*   [🧠 Fine-Tuning em LLMs:](#-fine-tuning-em-llms)
+    *   [1. Hierarquia de Treinamento](#1-hierarquia-de-treinamento)
+    *   [2. Parameter-Efficient FT (PEFT)](#2-parameter-efficient-ft-peft)
+    *   [3. ✨Pontos Essenciais](#3-pontos-essenciais)
+*   [Técnicas de Sampling e Parâmetros em LLMs](#técnicas-de-sampling-e-parâmetros-em-llms)
+    *   [1. Greedy Search](#1-greedy-search)
+    *   [2. Random Sampling](#2-random-sampling)
+    *   [3. Temperature Sampling](#3-temperature-sampling)
+    *   [4. Top-K Sampling](#4-top-k-sampling)
+    *   [5. Top-P (Nucleus) Sampling](#5-top-p-nucleus-sampling)
+    *   [6. Best-of-N Sampling](#6-best-of-n-sampling)
+    *   [Combinações Recomendadas](#combinações-recomendadas)
+    *   [Glossário Técnico](#glossário-técnico)
+*   [Task-based Evaluation](#task-based-evaluation)
+    *   [Introdução: O Desafio da Produção](#introdução-o-desafio-da-produção)
+    *   [A Necessidade de uma Estrutura de Avaliação Personalizada](#a-necessidade-de-uma-estrutura-de-avaliação-personalizada)
+    *   [Componentes Essenciais para uma Estrutura de Avaliação Personalizada](#componentes-essenciais-para-uma-estrutura-de-avaliação-personalizada)
+    *   [Métodos de Avaliação de Desempenho LLM](#métodos-de-avaliação-de-desempenho-llm)
+    *   [Conclusão Técnica](#conclusão-técnica)
+*   [Acelerando a Inferência LLM](#acelerando-a-inferência-llm)
+    *   [Trade-offs Fundamentais na Otimização de Inferência](#trade-offs-fundamentais-na-otimização-de-inferência)
+    *   [Categorias de Métodos de Aceleração](#categorias-de-métodos-de-aceleração)
+    *   [Métodos que Aproximam a Saída (Output-Approximating)](#métodos-que-aproximam-a-saída-output-approximating)
+        *   [1. Quantização (Quantization)](#1-quantização-quantization)
+        *   [2. Destilação (Distillation)](#2-destilação-distillation)
+    *   [Métodos que Preservam a Saída (Output-Preserving)](#métodos-que-preservam-a-saída-output-preserving)
+        *   [1. Flash Attention](#1-flash-attention)
+        *   [2. Prefix Caching (ou Context Caching)](#2-prefix-caching-ou-context-caching)
+    *   [Métodos que Preservam a Saída (Output-Preserving) - Continuação](#métodos-que-preservam-a-saída-output-preserving---continuação)
+        *   [3. Decodificação Especulativa (Speculative Decoding)](#3-decodificação-especulativa-speculative-decoding)
+        *   [4. Batching (Agrupamento em Lotes)](#4-batching-agrupamento-em-lotes)
+        *   [5. Parallelization (Paralelização)](#5-parallelization-paralelização)
+
+---
+
 ## 🤔 A Ascensão dos LLMs: Por Que São Importantes?
 
 Os Modelos de Linguagem Grandes (LLMs) estão em rápida ascensão ("popping up everywhere"), mudando como interagimos com a tecnologia.
