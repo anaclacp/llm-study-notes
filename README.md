@@ -48,6 +48,4 @@ O aprendizado envolveu a análise dos seguintes materiais e atividades práticas
 
 ## 🗓️ Próximos Dias
 
-*(Seções para Dia 2, Dia 3, etc., serão adicionadas aqui conforme o curso avança).*
-
-*   **Lembrete:** Livestream no Dia 2 às 15h no canal do YouTube do Kaggle.
+*   **Entre aqui nesse link para todos os dias:** [YouTube do Kaggle. ](https://www.youtube.com/playlist?list=PLqFaTIg4myu-lbBTrUpoQQIzZZxvrOaP5)
