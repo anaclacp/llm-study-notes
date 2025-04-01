@@ -433,8 +433,11 @@ Otimizar geralmente implica em compromissos (trade-offs), aceitando uma pequena 
 *    **Resultado:** Essa estratégia permitiu à DeepSeek desenvolver rapidamente modelos **altamente competitivos em performance, mas significativamente mais eficientes** (menores, mais rápidos, mais baratos de operar).
 
 > **Nota: Dados Sintéticos na Destilação**
+>
 > **No universo dos Grandes Modelos de Linguagem (LLMs)**, dados sintéticos referem-se a qualquer tipo de dado (principalmente texto, mas também pode incluir código, pares de perguntas e respostas, diálogos, etc.) que foi gerado artificialmente por um próprio LLM (ou outro processo algorítmico), em vez de ser coletado diretamente de fontes humanas ou interações do mundo real.
+> 
 > **Como se encaixam na Destilação:** Eles servem como uma ponte para transferir conhecimento. O professor cria novos pares `prompt -> resposta` (ou variações dos existentes) que são então usados, junto com os dados reais (se houver), para **treinar um modelo menor (o "aluno")**.
+> 
 > **Cuidado:** A qualidade desses dados gerados é crucial; dados sintéticos ruins podem prejudicar o aprendizado do aluno.
 ---
 *Este README reflete meu entendimento atual, enriquecido por discussões e esclarecimentos com uma IA (Gemini 2.5 Pro). Continuará a ser atualizado à medida que avanço nos estudos.*
