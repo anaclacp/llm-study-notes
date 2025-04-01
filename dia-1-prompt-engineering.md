@@ -172,6 +172,43 @@ Fazer LLMs "pensarem" logicamente é um desafio multifacetado. Requer a combina�
 
 **Conclusão:** Os melhores modelos de raciocínio combinam sinergicamente muitas dessas técnicas.
 
+## 🧠 Fine-Tuning em LLMs:
+
+### 1. **Hierarquia de Treinamento**
+- **Pré-treinamento** 
+  - Base do modelo (predição de tokens)
+  - Alto custo computacional
+
+- **Fine-Tuning**
+  - **SFT (Supervised Fine-Tuning)**
+    - Dados rotulados (prompt → resposta ideal)
+    - Melhora: instruções, diálogo, segurança
+  - **RLHF**
+    - Pós-SFT
+    - Alinhamento com preferências humanas
+    - Reward Model + RL (PPO/DPO)
+
+### 2. **Parameter-Efficient FT (PEFT)**
+### Técnicas Principais:
+- **LoRA/QLoRA**
+  - Matrizes de baixo rank
+  - Congelamento dos pesos originais
+- **Adapters**
+  - Módulos adicionais pequenos
+- **Soft Prompting**
+  - Vetores aprendíveis (~5 tokens)
+
+### Comparação Chave:
+| Método       | % Parâmetros Ajustados | Custo |
+|--------------|-----------------------|-------|
+| Full FT      | 100%                  | Alto  |
+| LoRA         | 0.1-1%                | Baixo |
+| Soft Prompt  | ~0.01%                | Mínimo|
+
+###. ✨**Pontos Essenciais**
+SFT é obrigatório antes do RLHF
+PEFT não substitui SFT/RLHF, mas otimiza
+Full FT > LoRA > Soft Prompt (performance vs custo)
 ---
 
 *Este README reflete meu entendimento atual, enriquecido por discussões e esclarecimentos com uma IA assistente. Continuará a ser atualizado à medida que avanço nos estudos.*
