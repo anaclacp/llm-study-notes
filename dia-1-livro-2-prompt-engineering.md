@@ -283,6 +283,172 @@ Este documento detalha três técnicas adicionais de engenharia de prompt para a
 
 ---
 
+## Autoconsistência (Self-consistency)
+
+Embora os modelos de linguagem grandes tenham demonstrado sucesso impressionante em várias tarefas de PLN, sua capacidade de raciocinar é frequentemente vista como uma limitação que não pode ser superada apenas aumentando o tamanho do modelo. Como aprendemos na seção anterior sobre prompting de Cadeia de Pensamento (CoT), o modelo pode ser instruído a gerar passos de raciocínio como um humano resolvendo um problema. No entanto, o CoT usa uma estratégia simples de ‘decodificação gulosa’ (*greedy decoding*), limitando sua eficácia. A **Autoconsistência**¹¹ combina amostragem e votação majoritária para gerar diversos caminhos de raciocínio e selecionar a resposta mais consistente. Isso melhora a precisão e a coerência das respostas geradas pelos LLMs.
+
+A Autoconsistência fornece uma pseudo-probabilidade da resposta estar correta, mas obviamente tem custos elevados.
+
+Ela segue os seguintes passos:
+
+1.  **Gerar diversos caminhos de raciocínio:** O LLM recebe o mesmo prompt múltiplas vezes. Uma configuração de temperatura alta incentiva o modelo a gerar diferentes caminhos de raciocínio e perspectivas sobre o problema.
+2.  **Extrair a resposta de cada resposta gerada.**
+3.  **Escolher a resposta mais comum (votação majoritária).**
+
+Vamos analisar um exemplo de um sistema de classificação de e-mails (IMPORTANTE/NÃO IMPORTANTE) usando um prompt CoT *zero-shot* enviado múltiplas vezes (Tabela 14).
+
+**Exemplo de Prompt (Classificação de E-mail):**
+```
+Olá,
+Vi que você usa Wordpress no seu site. Um ótimo sistema de gerenciamento de conteúdo de código aberto. Eu também já usei no passado. Ele vem com muitos plugins ótimos para usuários. E é bem fácil de configurar.
+
+Percebi um bug no formulário de contato, que acontece quando você seleciona o campo de nome. Veja a captura de tela anexa de mim digitando texto no campo de nome. Note a caixa de alerta JavaScript que eu inv0quei.
+
+Mas, de resto, é um ótimo site. Gosto de lê-lo. Sinta-se à vontade para deixar o bug no site, porque me dá coisas mais interessantes para ler.
+
+Abraços,
+Harry o Hacker.
+```
+**Saídas Possíveis:**
+
+*   **Tentativa 1:** Foca no risco técnico (injeção de JS), credibilidade duvidosa -> Conclusão: **IMPORTANTE**.
+*   **Tentativa 2:** Foca na falta de urgência, tom casual, sugestão de não corrigir -> Conclusão: **NÃO IMPORTANTE**.
+*   **Tentativa 3:** Similar à Tentativa 1, foca no risco de segurança -> Conclusão: **IMPORTANTE**.
+
+**Resultado da Self consistency:** Ao gerar várias Cadeias de Pensamento e tomar a resposta mais comum (IMPORTANTE, com 2 votos contra 1), obtemos uma resposta mais consistentemente correta.
+
+## Tree of Thoughts - (ToT)
+
+A **Tree of Thoughts (ToT)** generaliza o conceito de CoT. Em vez de uma única cadeia linear, o ToT permite aos LLMs explorar **múltiplos caminhos de raciocínio diferentes simultaneamente**, como os ramos de uma árvore.
+
+**Como funciona:**
+*   Mantém uma árvore onde cada "pensamento" é uma sequência de linguagem coerente (passo intermediário).
+*   O modelo explora diferentes caminhos ramificando-se a partir de nós da árvore.
+*   É particularmente adequado para tarefas complexas que exigem exploração e onde um único caminho pode falhar.
+  
+--- 
+
+## ReAct (Raciocinar & Agir)
+
+O prompting **ReAct (Reason and Act)** [10]¹³ é um paradigma que permite aos LLMs resolver tarefas complexas combinando:
+*   **Raciocínio** em linguagem natural.
+*   **Ação** usando **ferramentas externas** (ex: busca na web, interpretador de código, APIs).
+
+**Como funciona:**
+*   Imita como humanos raciocinam verbalmente e agem para obter informações.
+*   Opera em um ciclo **Pensamento -> Ação -> Observação**:
+    1.  O LLM raciocina sobre o problema e planeja uma ação.
+    2.  Executa a ação usando uma ferramenta (ex: busca).
+    3.  Observa o resultado da ferramenta.
+    4.  Usa a observação para atualizar seu raciocínio e planejar a próxima ação (ou dar a resposta final).
+*   É um passo em direção à **modelagem de agentes**.
+
+--- 
+
+## Engenharia de Prompt Automática (Automatic Prompt Engineering - APE)
+
+Dado que criar prompts pode ser complexo, a **APE**¹⁵ surge como um método para **automatizar a geração e otimização de prompts**, usando um LLM para criar prompts para outro LLM (ou para si mesmo).
+
+**Processo:**
+
+1.  **Gerar Prompts Candidatos:** Use um LLM para gerar variações de um prompt para uma tarefa.
+    *   **Exemplo (Tabela 15 - Chatbot de Loja):** Pedir ao `gemini-pro` para gerar 10 formas diferentes de dizer "Uma camiseta do Metallica tamanho P".
+        ```prompt
+        Temos uma loja virtual de camisetas de merchandising de bandas, e para treinar um chatbot precisamos de várias formas de pedir: "Uma camiseta do Metallica tamanho P". Gere 10 variantes, com a mesma semântica, mas mantenha o mesmo significado.
+        ```
+        *(Saída inclui variações como "Gostaria de comprar...", "Posso pedir...", "Uma camiseta..., por favor.", etc.)*
+2.  **Avaliar Candidatos:** Use métricas (BLEU, ROUGE) ou avaliação humana para pontuar os prompts gerados.
+3.  **Selecionar o Melhor:** Escolher o prompt com maior pontuação para uso ou refinamento adicional.
+
+--- 
+
+## Prompting para Código
+
+LLMs como Gemini podem gerar, explicar, traduzir e depurar código.
+
+### Prompts para Escrever Código
+
+Podem acelerar o desenvolvimento.
+
+*   **Exemplo (Tabela 16 - Script Bash):**
+    *   **Objetivo:** Criar script Bash para renomear arquivos em uma pasta, adicionando o prefixo "draft_".
+    *   **Prompt:**
+        ```
+        Escreva um snippet de código em Bash, que peça um nome de pasta. Em seguida, ele pega o conteúdo da pasta e renomeia todos os arquivos dentro, prefixando o nome draft ao nome do arquivo.
+        ```
+    *   **Saída:** Um script `.sh` funcional (após validação).
+    *   **Importante:** **Sempre revise e teste** o código gerado por LLMs antes de usar.
+
+### Prompts para Explicar Código
+
+Útil para entender código existente ou de terceiros.
+
+*   **Exemplo (Tabela 17 - Explicando Script Bash):**
+    *   **Objetivo:** Explicar o script Bash gerado anteriormente (sem os comentários originais).
+    *   **Prompt:**
+        ```
+        Explique para mim o código Bash abaixo:
+        ```bash
+        #!/bin/bash
+        # ... (código do script sem comentários) ...
+        ```
+    *   **Saída:** Uma explicação passo a passo detalhada da lógica do script (entrada do usuário, verificação de pasta, listagem, loop de renomeação, mensagem de sucesso).
+
+### Prompts para Traduzir Código
+
+Facilita a migração entre linguagens.
+
+*   **Exemplo (Tabela 18 - Bash para Python):**
+    *   **Objetivo:** Traduzir o script Bash de renomear arquivos para Python.
+    *   **Prompt:**
+        ```
+        Traduza o código Bash abaixo para um snippet Python.
+        ```bash
+        #!/bin/bash
+        # ... (código do script Bash) ...
+        ```
+    *   **Saída:** Um script Python equivalente usando módulos `os` e `shutil`.
+    *   **Nota:** Ao usar interfaces como Vertex AI Studio, pode ser necessário selecionar a saída em 'Markdown' para preservar a indentação do Python.
+
+### Prompts para Depurar e Revisar Código
+
+LLMs podem identificar erros e sugerir melhorias.
+
+*   **Exemplo (Tabela 19 - Depurando Python):**
+    *   **Contexto:** Um script Python modificado (Snippet 3) que introduziu um erro (`NameError: name ‘toUpperCase’ is not defined`) e outros problemas potenciais.
+    *   **Prompt:**
+        ```
+        O código Python abaixo dá um erro:
+        Traceback (most recent call last):
+         File "...", line 7, in <module>
+           text = toUpperCase(prefix)
+        NameError: name 'toUpperCase' is not defined
+
+        Depure o que está errado e explique como posso melhorar o código.
+        ```python
+        import os
+        import shutil
+        # ... (código Python quebrado do Snippet 3) ...
+        ```
+    *   **Saída:**
+        1.  **Correção do Erro Principal:** Identifica o `NameError` e sugere usar `prefix.upper()`. Fornece o código corrigido.
+        2.  **Sugestões de Melhoria Adicionais:**
+            *   Manter a extensão original do arquivo ao renomear.
+            *   Lidar com espaços em nomes de pastas (não implementado na sugestão final, mas mencionado).
+            *   Usar f-strings (já estava usando).
+            *   Adicionar tratamento de erros (`try...except`) para a operação de mover arquivos.
+        3.  **Código Aprimorado:** Fornece uma versão revisada incorporando a correção e algumas das melhorias (preservação da extensão e `try...except`).
+
+*   **Observação:** O LLM não só corrigiu o erro óbvio, mas também identificou e propôs soluções para outros problemas de robustez e boas práticas no código.
+
+---
+
+## E quanto ao prompting multimodal?
+
+Prompting para código ainda usa modelos de linguagem focados em texto. **Prompting multimodal** é diferente: usa **múltiplos formatos de entrada** (texto, imagem, áudio, etc.) para guiar o LLM, dependendo das capacidades do modelo.
+
+---
+
 Estas técnicas representam avanços significativos na engenharia de prompt, permitindo que os LLMs abordem problemas mais complexos, acessem informações externas e produzam resultados mais confiáveis e bem fundamentados.
 
 ---
