@@ -1,6 +1,6 @@
 # Resumo de técnicas de Engenharia de Prompt - Livro: Prompt Engineering - Author: Lee Boonstra
 
-# Engenharia de Prompt: Guia Introdutório e Técnicas Fundamentais para LLMs
+## Engenharia de Prompt: Guia Introdutório e Técnicas Fundamentais para LLMs
 
 Este documento detalha os conceitos básicos, configurações essenciais e técnicas iniciais de engenharia de prompt ao trabalhar com Modelos de Linguagem Grandes (LLMs), como o Gemini, com base no material fornecido.
 
