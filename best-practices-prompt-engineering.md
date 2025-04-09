@@ -1,6 +1,8 @@
 # Melhores Práticas em Engenharia de Prompt
 
-Encontrar o prompt certo requer experimentação (*tinkering*). Ferramentas como o Language Studio no Vertex AI são ideais para testar e refinar prompts em diferentes modelos. Adotar as práticas a seguir pode ajudá-lo a se tornar mais eficaz na engenharia de prompt.
+## Descrição rápida:
+> Esse documento foi traduzido dos últimos capítulos (com ajuda da Gemini 2.5 Pro) do livro: Prompt Engineering do curso 5-day Gen AI da Google com a Kaggle.
+> Atenção: A engenharia de prompt é um processo fundamentalmente iterativo, exigindo experimentação contínua (tinkering) para encontrar a formulação ideal. Adotar as melhores práticas a seguir é essencial para aprimorar sua eficácia nessa tarefa. Um dos pilares desse processo é a documentação rigorosa: registre cada tentativa, anotando as alterações, a qualidade da resposta da IA (se melhorou, piorou ou se tornou genérica) e outras observações relevantes. Lembre-se também de priorizar instruções positivas (o que fazer) em vez de acumular restrições negativas (o que não fazer), pois um excesso de limitações pode confundir ou restringir indevidamente o modelo..
 
 ## Forneça Exemplos (One-shot / Few-shot)
 
